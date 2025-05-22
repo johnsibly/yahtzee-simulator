@@ -37,115 +37,73 @@ int main()
   printf("You rolled a Yahtzee %d times out of %d three roll attempts. %f\n", yahtzeeCount, totalYahtzeeTries, (double)yahtzeeCount/(double)totalYahtzeeTries);
 }
 
-int* reRollLeastFrequent(int dice[], int numberCount[])
+
+int getMostFrequentCount(int dice[], int* mostFrequent)
 {
-  int leastFrequent = 0;
-  int leastFrequentCount = 6;
+  if (mostFrequent == NULL)
+  {
+    return 0;
+  }
+  *mostFrequent = 0;
+
+  // Initialize the most frequent number and its count
+  int mostFrequentCount = 0;
+  int numberCount[7] = {0, 0, 0, 0, 0, 0, 0};
+
+  // Count the occurrences of each number
   for (int i = 1; i < 6; i++)
   {
-    if (numberCount[dice[i]] < leastFrequentCount)
+    numberCount[dice[i]]++;
+
+    if (numberCount[dice[i]] > mostFrequentCount)
     {
-      leastFrequent = dice[i];
-      leastFrequentCount = numberCount[dice[i]];
+      *mostFrequent = dice[i];
+      mostFrequentCount = numberCount[dice[i]];
     }
   }
+  
+  return mostFrequentCount;
+}
+
+
+int reRollLeastFrequent(int* dice, int mostFrequent)
+{
   for (int i = 1; i < 6; i++)
   {
-    if (dice[i] == leastFrequent)
+    if (dice[i] != mostFrequent)
     {
       dice[i] = rollDice();
     }
   }
-  return dice;
+  return 0;
 }
 
 int playYahtzee()
 {
   int dice[6] = {0, rollDice(), rollDice(), rollDice(), rollDice(), rollDice()};
-  int numberCount[7] = {0, 0, 0, 0, 0, 0, 0};
+
   if (enabledPrintStms) printf("dice: %d %d %d %d %d\n", dice[1], dice[2], dice[3], dice[4], dice[5]);
 
   int i = 0;
   int mostFrequent = 0;
-  int mostFrequentCount = 0;
-  for (i = 1; i < 6; i++)
-  {
-    numberCount[dice[i]]++;
+  int mostFrequentCount = getMostFrequentCount(dice, &mostFrequent);
 
-    if (numberCount[dice[i]] > mostFrequentCount)
-    {
-      mostFrequent = dice[i];
-      mostFrequentCount = numberCount[dice[i]];
-    }
-  }
-  memset(numberCount, 0, sizeof(numberCount));
   if (mostFrequentCount == 5)
   {
     return 5;
   }
   else
   {
-    for (i = 1; i < 6; i++)
+    reRollLeastFrequent(dice, mostFrequent);
+    if (mostFrequentCount == 5)
     {
-
-      if (dice[i] == mostFrequent)
-      {
-        //printf("Keeping die %d (%d)\n", i, dice[i]);
-      }
-      else
-      {
-        dice[i] = rollDice();
-        //printf("Rolling die %d -> %d\n", i, dice[i]);
-      }
+      return 5;
     }
-    if (enabledPrintStms) printf("dice: %d %d %d %d %d\n", dice[1], dice[2], dice[3], dice[4], dice[5]);
-  }
-  mostFrequentCount = 0;
-  mostFrequent = 0;
-  for (i = 1; i < 6; i++)
-  {
-    numberCount[dice[i]]++;
-
-    if (numberCount[dice[i]] > mostFrequentCount)
+    else
     {
-      mostFrequent = dice[i];
-      mostFrequentCount = numberCount[dice[i]];
+      mostFrequentCount = getMostFrequentCount(dice, &mostFrequent);
+      reRollLeastFrequent(dice, mostFrequent); 
+      return getMostFrequentCount(dice, &mostFrequent);
     }
   }
-  memset(numberCount, 0, sizeof(numberCount));
-  if (mostFrequentCount == 5)
-  {
-    return 5;
-  }
-  else
-  {
-    for (i = 1; i < 6; i++)
-    {
-      numberCount[i] = 0;
-      if (dice[i] == mostFrequent)
-      {
-        //printf("Keeping die %d (%d)\n", i, dice[i]);
-      }
-      else
-      {
-        dice[i] = rollDice();
-        //printf("Rolling die %d -> %d\n", i, dice[i]);
-      }
-    }
-    if (enabledPrintStms) printf("dice: %d %d %d %d %d\n", dice[1], dice[2], dice[3], dice[4], dice[5]);
-  }
-  mostFrequentCount = 0;
-  mostFrequent = 0;
-  for (i = 1; i < 6; i++)
-  {
-    numberCount[dice[i]]++;
-
-    if (numberCount[dice[i]] > mostFrequentCount)
-    {
-      mostFrequent = dice[i];
-      mostFrequentCount = numberCount[dice[i]];
-    }
-  }
-
-  return mostFrequentCount;
 }
