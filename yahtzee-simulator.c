@@ -19,12 +19,12 @@ int main()
   srand(time(NULL));
 
   int yahtzeeCount = 0;
-  int totalYahtzeeTries = 1000000;
+  int totalYahtzeeTries = 20000000;
 
   for (int attempt = 0; attempt < totalYahtzeeTries; attempt++)
   {
     if (enabledPrintStms) printf("Attempt %d\n", attempt + 1);
-    if (playYahtzee() == 5) {
+    if (playYahtzee()) {
       if (enabledPrintStms) printf("********** You have a Yahtzee! ********** \n");
       yahtzeeCount++;
     } 
@@ -34,23 +34,16 @@ int main()
   }
   int endTime = time(NULL);
   printf("Elapsed time: %d seconds\n", endTime - startTime);
-  printf("You rolled a Yahtzee %d times out of %d three roll attempts. %f\n", yahtzeeCount, totalYahtzeeTries, (double)yahtzeeCount/(double)totalYahtzeeTries);
+  printf("You rolled a Yahtzee %d times out of %d three roll attempts.\nPercentage of rolls: %f%%\n", yahtzeeCount, totalYahtzeeTries, 100.0*(double)yahtzeeCount/(double)totalYahtzeeTries);
 }
 
 
 int getMostFrequentCount(int dice[], int* mostFrequent)
 {
-  if (mostFrequent == NULL)
-  {
-    return 0;
-  }
   *mostFrequent = 0;
-
-  // Initialize the most frequent number and its count
   int mostFrequentCount = 0;
   int numberCount[7] = {0, 0, 0, 0, 0, 0, 0};
 
-  // Count the occurrences of each number
   for (int i = 1; i < 6; i++)
   {
     numberCount[dice[i]]++;
@@ -64,7 +57,6 @@ int getMostFrequentCount(int dice[], int* mostFrequent)
   
   return mostFrequentCount;
 }
-
 
 int reRollLeastFrequent(int* dice, int mostFrequent)
 {
@@ -80,30 +72,24 @@ int reRollLeastFrequent(int* dice, int mostFrequent)
 
 int playYahtzee()
 {
+  int gotYahtzee = 0;
   int dice[6] = {0, rollDice(), rollDice(), rollDice(), rollDice(), rollDice()};
 
   if (enabledPrintStms) printf("dice: %d %d %d %d %d\n", dice[1], dice[2], dice[3], dice[4], dice[5]);
 
   int i = 0;
   int mostFrequent = 0;
-  int mostFrequentCount = getMostFrequentCount(dice, &mostFrequent);
+  gotYahtzee = getMostFrequentCount(dice, &mostFrequent) == 5;
 
-  if (mostFrequentCount == 5)
-  {
-    return 5;
-  }
-  else
+  if (!gotYahtzee)
   {
     reRollLeastFrequent(dice, mostFrequent);
-    if (mostFrequentCount == 5)
+    gotYahtzee = getMostFrequentCount(dice, &mostFrequent) == 5;
+    if (!gotYahtzee)
     {
-      return 5;
-    }
-    else
-    {
-      mostFrequentCount = getMostFrequentCount(dice, &mostFrequent);
       reRollLeastFrequent(dice, mostFrequent); 
-      return getMostFrequentCount(dice, &mostFrequent);
+      gotYahtzee = getMostFrequentCount(dice, &mostFrequent) == 5;
     }
   }
+  return gotYahtzee;
 }
