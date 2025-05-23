@@ -37,7 +37,6 @@ int main()
   printf("You rolled a Yahtzee %d times out of %d three roll attempts.\nPercentage of rolls: %f%%\n", yahtzeeCount, totalYahtzeeTries, 100.0*(double)yahtzeeCount/(double)totalYahtzeeTries);
 }
 
-
 int getMostFrequentCount(int dice[], int* mostFrequent)
 {
   *mostFrequent = 0;
