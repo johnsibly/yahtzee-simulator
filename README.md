@@ -1,4 +1,4 @@
-# yahtzee-simulator#Build
+# yahtzee-simulator
 
 Programme to simulate the game of Yahtzee.
 I.e. you roll 5 dice and try to get the best combination of numbers.
