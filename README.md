@@ -8,7 +8,11 @@ A Yahtzee is when you get all 5 dice to show the same number.
 I was interested in the game and wanted to simulate it to see how often you get certain combinations, and test out the theoretical prodictions from this article: https://www.datagenetics.com/blog/january42012/
 
 #Build
-```gcc yahtzee-simulator.c -o yahtzee-simulator```
+```
+gcc yahtzee-simulator.c -o yahtzee-simulator
+```
 
 #Run
-```./yahtzee-simulator```
+```
+./yahtzee-simulator
+```
